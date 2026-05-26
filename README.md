@@ -1,4 +1,5 @@
 # changepoint_analysis
+[![DOI](https://zenodo.org/badge/1250161304.svg)](https://doi.org/10.5281/zenodo.20394970)
 
 Multi-model changepoint detection for downcore radiocarbon (F<sup>14</sup>C)
 profiles in sediment and soil cores. The pipeline identifies stratigraphic
