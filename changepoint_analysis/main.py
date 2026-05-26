@@ -464,10 +464,29 @@ def _print_breakpoint_stability(
 
 
 def _print_suggested(result: PipelineResult) -> None:
-    """Print the suggested segmentation summary to stdout."""
-    best_row = result.df[
-        result.df["k_snapped"] == result.selected_k
-    ].iloc[0]
+    """Print the suggested segmentation summary to stdout.
+
+    Locates the chosen evidence-table row by matching BOTH the selected
+    k and the selected breakpoint depths. Matching on k alone fails when
+    the knee region contains multiple candidate segmentations at the
+    same k (e.g. one from L1 and one from L2 with different snapped
+    boundaries). In that case ``iloc[0]`` would pick whichever row
+    happened to sort to position 0 in the evidence table, not the one
+    ``suggest_segmentation`` actually returned. The printed summary
+    would then show fields from the wrong row.
+    """
+    same_k = result.df[result.df["k_snapped"] == result.selected_k]
+    target = list(result.best_depth_bkps)
+    matches = same_k[same_k["breakpoints_snapped_cm"].apply(
+        lambda b: list(b) == target)]
+    if matches.empty:
+        # Defensive fallback: should never trigger because suggest_segmentation
+        # returns a row that exists in df, but if the data structures ever
+        # drift, fall back to the first matching k row rather than crash.
+        best_row = same_k.iloc[0]
+    else:
+        best_row = matches.iloc[0]
+
     print("=" * 78)
     print("SUGGESTED SEGMENTATION")
     print("=" * 78)
