@@ -1,0 +1,15 @@
+# Runtime dependencies for the changepoint_analysis pipeline.
+#
+# Lower bounds reflect the minimum tested version. Patch updates are
+# picked up automatically. Major-version upgrades should be retested
+# before raising the lower bound.
+
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+matplotlib>=3.7
+ruptures>=1.1.9
+
+# Optional. Required for the 'rbf' cost model. Without it, the pipeline
+# falls back to ('l2', 'l1') and issues an ImportWarning at import.
+scikit-learn>=1.3

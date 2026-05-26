@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "changepoint_analysis: multi-model changepoint detection for downcore radiocarbon profiles"
+abstract: >-
+  A Python pipeline for detecting stratigraphic zone boundaries in
+  sediment and soil cores by combining penalised changepoint detection
+  (PELT/CROPS) with knee-point selection (Kneedle) across multiple cost
+  models. The pipeline quantifies boundary reproducibility across cost
+  models and tolerance settings and selects segmentations using a
+  stability-primary rule.
+authors:
+  - family-names: "Schwab"
+    given-names: "Melissa Sophia"
+    orcid: "https://orcid.org/0000-0001-5600-4439"
+version: "0.1.0"
+date-released: "2026-05-26"
+license: MIT
+repository-code: "https://github.com/MelissaSchwab/changepoint_analysis"
+keywords:
+  - changepoint detection
+  - radiocarbon
+  - permafrost
+  - stratigraphy
+  - PELT
+  - CROPS
+  - Kneedle
+references:
+  - type: article
+    authors:
+      - family-names: Killick
+        given-names: R.
+      - family-names: Fearnhead
+        given-names: P.
+      - family-names: Eckley
+        given-names: I. A.
+    title: "Optimal detection of changepoints with a linear computational cost"
+    journal: "Journal of the American Statistical Association"
+    volume: 107
+    issue: 500
+    year: 2012
+    start: 1590
+    end: 1598
+  - type: article
+    authors:
+      - family-names: Haynes
+        given-names: K.
+      - family-names: Eckley
+        given-names: I. A.
+      - family-names: Fearnhead
+        given-names: P.
+    title: "Computationally efficient changepoint detection for a range of penalties"
+    journal: "Journal of Computational and Graphical Statistics"
+    volume: 26
+    issue: 1
+    year: 2017
+    start: 134
+    end: 143
+  - type: conference-paper
+    authors:
+      - family-names: Satopaa
+        given-names: V.
+      - family-names: Albrecht
+        given-names: J.
+      - family-names: Irwin
+        given-names: D.
+      - family-names: Raghavan
+        given-names: B.
+    title: "Finding a kneedle in a haystack: detecting knee points in system behavior"
+    collection-title: "31st International Conference on Distributed Computing Systems Workshops"
+    year: 2011
+    start: 166
+    end: 171
