@@ -67,7 +67,7 @@ from changepoint_analysis.statistics import (
 )
 
 
-# ── Type aliases ──────────────────────────────────────────────────────────────
+# ── Type aliases ─────────────────────────────────────────────────────────────
 
 UniqueBkpsKey = tuple[tuple[int, ...], tuple[int, ...]]
 """Composite key (seg_bkps, depth_bkps) for ``unique_bkps`` entries.
@@ -88,7 +88,7 @@ class SegmentationEval(TypedDict):
     min_zone_size: int
 
 
-# ── Breakpoint clustering ─────────────────────────────────────────────────────
+# ── Breakpoint clustering ────────────────────────────────────────────────────
 
 def _cluster_breakpoints(
     all_bkps: list[int],
@@ -169,7 +169,7 @@ def _nearest_stability(
     return stab_vals, sig_vals
 
 
-# ── Zone assignment ───────────────────────────────────────────────────────────
+# ── Zone assignment ──────────────────────────────────────────────────────────
 
 def assign_zones_to_segments(
     segment_bkps_indices: list[int] | tuple[int, ...],
@@ -202,7 +202,7 @@ def assign_zones_to_segments(
     return zones
 
 
-# ── Breakpoint conversion and snapping ────────────────────────────────────────
+# ── Breakpoint conversion and snapping ───────────────────────────────────────
 
 def pelt_bkps_to_depths(
     pelt_bkps: list[int],
@@ -278,7 +278,7 @@ def depths_to_segment_indices(
     return tuple(sorted(seg_indices))
 
 
-# ── Segmentation scoring ──────────────────────────────────────────────────────
+# ── Segmentation scoring ─────────────────────────────────────────────────────
 
 def evaluate_segmentation(
     segment_bkps_indices: list[int] | tuple[int, ...],
@@ -403,7 +403,7 @@ def _min_adjacent_effect_size(
     return float(min_d) if np.isfinite(min_d) else np.nan
 
 
-# ── Cross-model consensus scoring ─────────────────────────────────────────────
+# ── Cross-model consensus scoring ────────────────────────────────────────────
 
 def compute_consensus_scores(
     crops_results: dict,
@@ -461,7 +461,7 @@ def compute_consensus_scores(
     return consensus
 
 
-# ── Breakpoint stability ──────────────────────────────────────────────────────
+# ── Breakpoint stability ─────────────────────────────────────────────────────
 
 def compute_breakpoint_stability(
     crops_results: dict,
@@ -548,14 +548,14 @@ def compute_breakpoint_stability(
     return freq_dict, sigma_dict
 
 
-# ── Nesting consistency (tiebreaker only) ─────────────────────────────────────
+# ── Nesting consistency (tiebreaker only) ────────────────────────────────────
 
 def _is_nested(
     bkps_lo: tuple[int, ...],
     bkps_hi: tuple[int, ...],
     tol: int = NESTING_TOL_CM,
 ) -> bool:
-    """Return True if every boundary in bkps_lo appears within tol cm in bkps_hi."""
+    """Return True if every bkps_lo boundary lies within tol cm of bkps_hi."""
     if not bkps_lo:
         return True
     if not bkps_hi:
@@ -597,7 +597,7 @@ def compute_nesting(df: pd.DataFrame) -> dict[tuple, bool | None]:
     return result
 
 
-# ── Candidate collection ──────────────────────────────────────────────────────
+# ── Candidate collection ─────────────────────────────────────────────────────
 
 def group_records_by_k(crops_results: dict) -> dict[str, dict[int, list]]:
     """Index CROPS records by cost model and breakpoint count.
@@ -647,7 +647,7 @@ def collect_unique_bkps(
     return unique_bkps
 
 
-# ── Results table ─────────────────────────────────────────────────────────────
+# ── Results table ────────────────────────────────────────────────────────────
 
 def build_results_table(
     unique_bkps: dict,
@@ -761,7 +761,8 @@ def build_results_table(
             "breakpoints_grid_cm":    list(depth_bkps),
             "breakpoints_snapped_cm": list(snapped_cm),
             "min_zone_size":          result["min_zone_size"],
-            "singleton_flag":         result["min_zone_size"] < MIN_SEGMENTS_PER_ZONE,
+            "singleton_flag":         (result["min_zone_size"]
+                                       < MIN_SEGMENTS_PER_ZONE),
             "omni_p": (round(result["omni_p"], 4)
                        if not np.isnan(result["omni_p"]) else np.nan),
             "delta_rss_norm":  round(delta_rss_norm, 4),
@@ -792,7 +793,7 @@ def build_results_table(
     return df
 
 
-# ── Selection ─────────────────────────────────────────────────────────────────
+# ── Selection ────────────────────────────────────────────────────────────────
 
 def _admissible(
     df: pd.DataFrame,
@@ -943,7 +944,7 @@ def suggest_segmentation(
         best = _sort_candidates(stable).iloc[0]
         mode = (
             f"Step 2 — maximal stable resolution "
-            f"(stability \u2265 {STABILITY_THRESHOLD:.2f}; "
+            f"(stability ≥ {STABILITY_THRESHOLD:.2f}; "
             f"plateau used as tiebreaker only)"
         )
         return best, mode

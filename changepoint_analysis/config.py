@@ -36,9 +36,12 @@ across pipeline versions.
 """
 from __future__ import annotations
 
+import json
+import os
 import warnings
 
 import numpy as np
+
 
 # RBF cost requires ruptures with scikit-learn kernel support compiled in.
 # Checking hasattr(CostRbf) is not sufficient: the class can exist but fail
@@ -66,13 +69,13 @@ if not _RBF_AVAILABLE:
         stacklevel=2,
     )
 
-# ── Pipeline version ──────────────────────────────────────────────────────────
+# ── Pipeline version ─────────────────────────────────────────────────────────
 
-PIPELINE_VERSION: str = "0.1.0"
+PIPELINE_VERSION: str = "0.2.0"
 """Semantic version of the pipeline. Increment when behaviour changes."""
 
 
-# ── Algorithm parameters ──────────────────────────────────────────────────────
+# ── Algorithm parameters ─────────────────────────────────────────────────────
 
 INTERPOLATION_METHOD: str = "linear"
 """Interpolation method for gap cells. Either ``"linear"`` or ``"pchip"``.
@@ -88,7 +91,10 @@ S_VALUES: tuple[float, ...] = (0.0, 0.5, 1.0)
 """Kneedle sensitivity sweep values."""
 
 ELBOW_TOLERANCE: float = 0.20
-"""Near-knee region half-width as a fraction of the peak difference (0 < tol < 1)."""
+"""Near-knee region half-width as a fraction of the peak difference.
+
+Must satisfy 0 < tol < 1.
+"""
 
 TOLERANCE_SWEEP: tuple[float, ...] = (0.05, 0.10, 0.15, 0.20, 0.25)
 """Tolerance grid for the knee-region sensitivity analysis."""
@@ -136,7 +142,7 @@ not excluded. Scientific justification is required when zones are flagged.
 """
 
 MIN_DELTA_RSS_NORM: float = 0.02
-"""Minimum normalised marginal RSS reduction required to avoid the plateau gate.
+"""Minimum normalised marginal RSS reduction that avoids the plateau flag.
 
 Formerly named RSS_PLATEAU_THRESHOLD. Renamed to reflect what is actually
 being thresholded: the marginal explanatory gain per additional changepoint.
@@ -218,7 +224,7 @@ if BETA_MAX_RETRIES < 1:
     )
 
 
-# ── Core validation ───────────────────────────────────────────────────────────
+# ── Core validation ──────────────────────────────────────────────────────────
 
 def _validate_core(name: str, core: dict) -> None:
     """Validate a core data dict on import.
@@ -350,7 +356,7 @@ def _validate_core(name: str, core: dict) -> None:
         )
 
 
-# ── Core data ─────────────────────────────────────────────────────────────────
+# ── Core data ────────────────────────────────────────────────────────────────
 # Each entry is a dict with keys: tops, bottoms, fm, sd.
 #
 # SD values are 1-sigma AMS measurement uncertainties in F14C units. They
@@ -446,6 +452,32 @@ CORES: dict[str, dict] = {
     },
 }
 
+# ── Optional environment overrides (null-model study) ────────────────────────
+#
+# Three environment variables let null_model/simulate.py run the unchanged
+# pipeline on synthetic profiles without editing this file.
+#
+#   CPA_CORE_JSON  Path to a JSON file with keys tops, bottoms, fm, sd. The
+#                  profile is added to CORES under the key "CUSTOM".
+#   CPA_ACTIVE     Overrides the default ACTIVE_CORE (see below).
+#   CPA_NPERM      Overrides N_PERMUTATIONS.
+#
+# When none of these variables is set, nothing in this block runs and the
+# configuration is identical to the hard-coded values above.
+
+_CUSTOM_CORE_KEYS: tuple[str, ...] = ("tops", "bottoms", "fm", "sd")
+
+if os.environ.get("CPA_CORE_JSON"):
+    with open(os.environ["CPA_CORE_JSON"], encoding="utf-8") as _fh:
+        _custom = json.load(_fh)
+    CORES["CUSTOM"] = {
+        _key: np.array(_custom[_key], dtype=float)
+        for _key in _CUSTOM_CORE_KEYS
+    }
+
+if os.environ.get("CPA_NPERM"):
+    N_PERMUTATIONS = int(os.environ["CPA_NPERM"])
+
 # Validate all cores on import. Catches data entry errors before they
 # propagate silently through the pipeline.
 for _name, _core in CORES.items():
@@ -462,10 +494,15 @@ for _name, _core in CORES.items():
         _core[_field].flags.writeable = False
 
 
-# ── Active core selection ─────────────────────────────────────────────────────
+# ── Active core selection ────────────────────────────────────────────────────
 
-ACTIVE_CORE: str = "HC03"
-"""Key of the core to analyse. Must be one of: HCCN, HC03, HC67, Toolik."""
+ACTIVE_CORE: str = os.environ.get("CPA_ACTIVE", "HC03")
+"""Key of the core to analyse.
+
+One of HCCN, HC03, HC67, Toolik, or CUSTOM when ``CPA_CORE_JSON`` is
+set. Defaults to HC03 unless the ``CPA_ACTIVE`` environment variable
+names another key.
+"""
 
 if ACTIVE_CORE not in CORES:
     raise ValueError(
@@ -526,7 +563,7 @@ if len(_thicknesses_for_check) > 0:
         )
 
 
-# ── Heuristic clustering and tolerance constants ──────────────────────────────
+# ── Heuristic clustering and tolerance constants ─────────────────────────────
 #
 # These constants were previously embedded as magic numbers in
 # interpolation.py and evaluation.py. They are centralised here so that
@@ -556,7 +593,7 @@ A breakpoint in a lower-k segmentation is treated as 'nested' in a
 higher-k segmentation when a boundary within this distance exists.
 """
 
-# ── Output paths ──────────────────────────────────────────────────────────────
+# ── Output paths ─────────────────────────────────────────────────────────────
 #
 # All output filenames are routed through this dict so that callers
 # running the pipeline from a non-default working directory can override
@@ -589,7 +626,7 @@ tolerance_sweep_png:
 """
 
 
-# ── Public API ────────────────────────────────────────────────────────────────
+# ── Public API ───────────────────────────────────────────────────────────────
 
 __all__ = [
     # Pipeline version

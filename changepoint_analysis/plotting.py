@@ -27,7 +27,7 @@ from changepoint_analysis.interpolation import build_grid
 from changepoint_analysis.kneedle import KneedleResult
 
 
-# ── Matplotlib style ──────────────────────────────────────────────────────────
+# ── Matplotlib style ─────────────────────────────────────────────────────────
 
 # rcParams used by every plot in this module. Applied via a context
 # manager so callers' global style is not silently overwritten on import.
@@ -105,7 +105,7 @@ def _perpendicular_foot(kn: float, cn: float) -> tuple[float, float]:
     return mid, mid
 
 
-# ── Knee plot ─────────────────────────────────────────────────────────────────
+# ── Knee plot ────────────────────────────────────────────────────────────────
 
 def plot_knees(
     knee_info: dict[str, KneedleResult],
@@ -283,7 +283,7 @@ def plot_knees(
             plt.close(fig)
 
 
-# ── Downcore plot ─────────────────────────────────────────────────────────────
+# ── Downcore plot ────────────────────────────────────────────────────────────
 
 def plot_downcore(
     best_depth_bkps: list[int],
@@ -482,7 +482,7 @@ def plot_downcore(
             plt.close(fig)
 
 
-# ── Tolerance sensitivity plot ────────────────────────────────────────────────
+# ── Tolerance sensitivity plot ───────────────────────────────────────────────
 
 def plot_tolerance_sweep(
     sweep_df: pd.DataFrame,

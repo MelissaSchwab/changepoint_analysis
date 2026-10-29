@@ -52,7 +52,7 @@ from scipy.stats import rankdata
 from changepoint_analysis.config import N_PERMUTATIONS, PERMUTATION_SEED
 
 
-# ── Zone summary table ────────────────────────────────────────────────────────
+# ── Zone summary table ───────────────────────────────────────────────────────
 
 def zone_summary_table(
     fm_values: np.ndarray,
@@ -256,18 +256,18 @@ def zone_summary_table(
     return pd.DataFrame(rows)
 
 
-# ── Omnibus statistic ─────────────────────────────────────────────────────────
+# ── Omnibus statistic ────────────────────────────────────────────────────────
 
 def _weighted_rank_anova_statistic(
     ranks: np.ndarray,
     groups: np.ndarray,
     weights: np.ndarray,
 ) -> float:
-    """Compute the weighted between-group rank dispersion statistic.
+    r"""Compute the weighted between-group rank dispersion statistic.
 
     .. math::
 
-        H_w = \\frac{\\sum_g W_g (\\bar{r}_g - \\bar{r})^2}{V_r}
+        H_w = \frac{\sum_g W_g (\bar{r}_g - \bar{r})^2}{V_r}
 
     where means and variance are thickness-weighted. This is a custom
     weighted extension of the standard between-group rank dispersion used
@@ -370,11 +370,13 @@ def weighted_rank_permutation_anova(
 
     # Fully vectorised null computation.
     #
-    # For each permutation row p, H(p) = sum_g W_g * (mean_rank_g(p) - mean)^2 / V.
-    # Both mean (the global weighted rank mean) and V (the global weighted rank
-    # variance) are invariant under permutation of ranks. Only mean_rank_g(p)
-    # changes. Build a one-hot group membership matrix M of shape (n_obs, n_groups);
-    # then weighted per-group rank sums for all permutations are
+    # For each permutation row p,
+    #     H(p) = sum_g W_g * (mean_rank_g(p) - mean)^2 / V.
+    # Both mean (the global weighted rank mean) and V (the global weighted
+    # rank variance) are invariant under permutation of ranks. Only
+    # mean_rank_g(p) changes. Build a one-hot group membership matrix M of
+    # shape (n_obs, n_groups); then weighted per-group rank sums for all
+    # permutations are
     #     ((ranks[perm_matrix]) * weights[None, :]) @ M
     # of shape (n_perm, n_groups). Divide row-wise by W_g to get per-group
     # weighted means under each permutation.
@@ -393,10 +395,12 @@ def weighted_rank_permutation_anova(
     if var_rank <= 0:
         return float(H_obs), float("nan")
 
-    permuted_ranks = ranks[perm_matrix]                        # (n_perm, n_obs)
-    weighted_perm_ranks = permuted_ranks * weights[None, :]    # (n_perm, n_obs)
-    group_weighted_sums = weighted_perm_ranks @ membership     # (n_perm, n_groups)
-    group_means = group_weighted_sums / safe_W_g[None, :]      # (n_perm, n_groups)
+    # Array shapes: permuted and weighted ranks (n_perm, n_obs); group
+    # sums and means (n_perm, n_groups).
+    permuted_ranks = ranks[perm_matrix]
+    weighted_perm_ranks = permuted_ranks * weights[None, :]
+    group_weighted_sums = weighted_perm_ranks @ membership
+    group_means = group_weighted_sums / safe_W_g[None, :]
     centred = group_means - global_mean
     H_null = (W_g[None, :] * centred ** 2).sum(axis=1) / var_rank
 
@@ -445,7 +449,7 @@ def _holm_bonferroni(p_values: np.ndarray) -> np.ndarray:
     return p_adj
 
 
-# ── Pairwise post-hoc ─────────────────────────────────────────────────────────
+# ── Pairwise post-hoc ────────────────────────────────────────────────────────
 
 def weighted_pairwise_test(
     values: np.ndarray,

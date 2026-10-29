@@ -15,7 +15,8 @@ Exploratory analysis
 - Breakpoint stability scoring across models and tolerances
 
 Segmentation evaluation
-- Automated segmentation suggestion (cross-model consensus or maximal stable resolution)
+- Automated segmentation suggestion (cross-model consensus or maximal
+  stable resolution)
 - Zone F14C statistics with bootstrap uncertainty quantification
 - Knee tolerance sensitivity analysis
 
