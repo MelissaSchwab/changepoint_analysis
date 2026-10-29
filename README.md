@@ -98,6 +98,13 @@ Running `python -m changepoint_analysis.main` additionally produces:
 
 Output filenames are configurable via `config.OUTPUT_PATHS`.
 
+## Steady-state null model
+
+The `null_model/` folder holds the steady-state radiocarbon model used to test
+whether change points can arise without a thaw history, and the scripts that
+run this pipeline on its synthetic profiles. See
+[null_model/README.md](null_model/README.md).
+
 ## Algorithms and references
 
 | Step | Algorithm | Reference |

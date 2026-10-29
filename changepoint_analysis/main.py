@@ -132,7 +132,7 @@ class PipelineResult:
     beta_ranges: dict[str, tuple[float, float]] = field(default_factory=dict)
 
 
-# ── Computation core (no side effects) ────────────────────────────────────────
+# ── Computation core (no side effects) ───────────────────────────────────────
 
 def run_pipeline() -> PipelineResult:
     """Run the full changepoint detection pipeline.
@@ -235,7 +235,7 @@ def run_pipeline() -> PipelineResult:
     )
 
 
-# ── Side-effecting entry point ────────────────────────────────────────────────
+# ── Side-effecting entry point ───────────────────────────────────────────────
 
 def main() -> PipelineResult:
     """Run the pipeline with progress prints and CSV writing.
@@ -251,7 +251,7 @@ def main() -> PipelineResult:
     return result
 
 
-# ── Output: CSV writing ───────────────────────────────────────────────────────
+# ── Output: CSV writing ──────────────────────────────────────────────────────
 
 def _write_csv_outputs(result: PipelineResult) -> None:
     """Write CSV outputs to the paths in ``config.OUTPUT_PATHS``.
@@ -282,7 +282,7 @@ def _write_csv_outputs(result: PipelineResult) -> None:
     sweep_df.to_csv(OUTPUT_PATHS["tolerance_sweep_csv"], index=False)
 
 
-# ── Output: console printing ──────────────────────────────────────────────────
+# ── Output: console printing ─────────────────────────────────────────────────
 
 def _print_header() -> None:
     """Print the pipeline configuration header."""
@@ -299,10 +299,10 @@ def _print_header() -> None:
     print(f"Knee tolerance        {ELBOW_TOLERANCE}")
     print(f"Cost models           {tuple(COST_MODELS)}")
     print(f"Permutations          {N_PERMUTATIONS}")
-    print(f"Stability gate        f(b) \u2265 {STABILITY_THRESHOLD:.2f}")
+    print(f"Stability gate        f(b) ≥ {STABILITY_THRESHOLD:.2f}")
     print(
         f"Plateau threshold     "
-        f"{MIN_DELTA_RSS_NORM:.0%} of RSS\u2080 "
+        f"{MIN_DELTA_RSS_NORM:.0%} of RSS₀ "
         f"(descriptive / tiebreaker)"
     )
     print(f"Max k (segments - 1)  {N_SEGMENTS - 1}")
@@ -508,7 +508,7 @@ def _print_suggested(result: PipelineResult) -> None:
 
     delta = best_row["delta_rss_norm"]
     print(
-        f"  delta_rss_norm:      {delta:.4f}  ({delta:.1%} of RSS\u2080)"
+        f"  delta_rss_norm:      {delta:.4f}  ({delta:.1%} of RSS₀)"
     )
     print(f"  Min breakpt stab.:   {ms_str}")
     print(f"  Mean sigma_b:        {sg_str}")
@@ -521,7 +521,7 @@ def _print_suggested(result: PipelineResult) -> None:
     print()
 
 
-# ── Command-line entry point ──────────────────────────────────────────────────
+# ── Command-line entry point ─────────────────────────────────────────────────
 
 if __name__ == "__main__":
     result = main()

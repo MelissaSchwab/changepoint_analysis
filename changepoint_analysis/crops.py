@@ -46,7 +46,7 @@ def _beta_close(a: float, b: float) -> bool:
     return abs(a - b) <= tol
 
 
-# ── PELT helpers ──────────────────────────────────────────────────────────────
+# ── PELT helpers ─────────────────────────────────────────────────────────────
 
 def build_pelt(model: str, signal: np.ndarray) -> rpt.Pelt:
     """Construct and fit a PELT instance for a given cost model.
@@ -226,7 +226,7 @@ def resolve_beta_max(
     )
 
 
-# ── CROPS ─────────────────────────────────────────────────────────────────────
+# ── CROPS ────────────────────────────────────────────────────────────────────
 
 def _crossover_penalty(
     k_more: int,
@@ -374,7 +374,8 @@ def _crops_inner(
             f"CROPS precondition violated: beta_min={beta_min:.6g} "
             f"produces k={k_at_min}, but beta_max={beta_max:.6g} "
             f"produces k={k_at_max}. "
-            f"beta_min must produce at least as many changepoints as beta_max. "
+            f"beta_min must produce at least as many changepoints as "
+            f"beta_max. "
             f"Decrease beta_min or increase beta_max."
         )
 

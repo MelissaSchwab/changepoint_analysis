@@ -274,7 +274,10 @@ def build_grid(
     # against floor/ceil of segment bounds preserves the original warning
     # semantics without a Python loop.
     contributed = np.zeros(len(SEGMENT_FM), dtype=bool)
-    assigned_idx = candidate_idx[inside] if in_range.any() else np.array([], dtype=int)
+    assigned_idx = (
+        candidate_idx[inside] if in_range.any()
+        else np.array([], dtype=int)
+    )
     if assigned_idx.size:
         contributed[np.unique(assigned_idx)] = True
     for i in np.where(~contributed)[0]:

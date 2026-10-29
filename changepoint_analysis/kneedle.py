@@ -98,7 +98,7 @@ class KneedleResult:
         return sorted(int(k) for k, m in zip(self.ks, region_mask) if m)
 
 
-# ── Internal helpers ──────────────────────────────────────────────────────────
+# ── Internal helpers ─────────────────────────────────────────────────────────
 
 def _smoothing_spline(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     """Apply a smoothing spline to y(x).
@@ -200,7 +200,7 @@ def _empty_result(
     )
 
 
-# ── Public API ────────────────────────────────────────────────────────────────
+# ── Public API ───────────────────────────────────────────────────────────────
 
 def kneedle_knee(
     ks: np.ndarray,
